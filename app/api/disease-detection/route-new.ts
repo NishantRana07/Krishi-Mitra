@@ -118,4 +118,3 @@ Image data: ${imageBase64}`
     return NextResponse.json(fallbackResponse)
   }
 }
-
