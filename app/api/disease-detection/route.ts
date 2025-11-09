@@ -17,34 +17,26 @@ const DiseaseAnalysisSchema = z.object({
   recommendations: z.array(z.string()).describe("Specific recommendations"),
 })
 
-export async function POST(request: NextRequest) {
-  try {
-    const { imageBase64, farmerContext } = await request.json()
+// All 6 Gemini API keys for maximum reliability (300 requests/day)
+const GEMINI_API_KEYS = [
+  "AIzaSyCtdtZeXamaI15dMGjZ7k5_NSIUcDlwdP0",
+  "AIzaSyB2OilxGNCq3z5QPYDaAtZr72ZaAfnz-Co",
+  "AIzaSyAkOdC-zHvo_c2lcEAmhwEV_V3ryIPchHs",
+  "AIzaSyARCqY9P9TQg0rDJkcNC-j4DEiFl9v8brQ",
+  "AIzaSyAe6PnlEGHokJa-V4-ZQl8UKKnA4L6jQn4",
+  "AIzaSyDS1k_6OrKfML-ikOLVBewcWCBNVCUlZ6Y",
+].filter(Boolean) as string[]
 
-    const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY
-    if (!apiKey) {
-      console.error("Missing GOOGLE_GENERATIVE_AI_API_KEY")
-      return NextResponse.json({
-        disease: "Healthy Crop",
-        confidence: 100,
-        cropHealth: 100,
-        severity: "Low" as const,
-        cause: "",
-        whyHappened: [],
-        harmfulness: "",
-        treatment: [],
-        prevention: [],
-        affectedArea: "0%",
-        recommendations: [
-          "AI service is not configured. Please set GOOGLE_GENERATIVE_AI_API_KEY in your environment.",
-        ],
-      })
-    }
+async function detectWithFallback(prompt: string, imageBase64: string) {
+  let lastError: any = null
 
-    const { object } = await generateObject({
-      model: google("gemini-2.0-flash"),
-      schema: DiseaseAnalysisSchema,
-      prompt: `You are an expert agricultural disease detection AI. Analyze this crop image and provide detailed disease analysis. Respond in ${farmerContext?.language || "English"}.
+  for (let i = 0; i < GEMINI_API_KEYS.length; i++) {
+    try {
+      const apiKey = GEMINI_API_KEYS[i]
+      const { object } = await generateObject({
+        model: google("gemini-2.0-flash-exp", { apiKey }),
+        schema: DiseaseAnalysisSchema,
+        prompt,
 
 Farmer Context:
 - Crop: ${farmerContext?.crop || "Unknown"}
@@ -67,9 +59,47 @@ Based on the image and farm context, provide:
 If no disease is detected, indicate "Healthy Crop" with 100% health.
 
 Image data: ${imageBase64}`,
-    })
+      })
+      return object
+    } catch (error: any) {
+      console.error(`Disease detection API key ${i + 1} failed:`, error.message)
+      lastError = error
+      if (i < GEMINI_API_KEYS.length - 1) continue
+    }
+  }
+  throw lastError
+}
 
-    return NextResponse.json(object)
+export async function POST(request: NextRequest) {
+  try {
+    const { imageBase64, farmerContext } = await request.json()
+
+    const prompt = `You are an expert agricultural disease detection AI. Analyze this crop image and provide detailed disease analysis. Respond in ${farmerContext?.language || "English"}.
+
+Farmer Context:
+- Crop: ${farmerContext?.crop || "Unknown"}
+- Location: ${farmerContext?.location || "Unknown"}
+- Soil pH: ${farmerContext?.soilPH || "Unknown"}
+- Soil Moisture: ${farmerContext?.soilMoisture || "Unknown"}%
+
+Based on the image and farm context, provide:
+1. Disease name and confidence level
+2. Crop health percentage
+3. Severity assessment
+4. Root cause analysis
+5. Why this disease occurred given the farm conditions
+6. Potential yield impact
+7. Detailed treatment steps
+8. Prevention measures
+9. Affected area percentage
+10. Specific recommendations for this farm
+
+If no disease is detected, indicate "Healthy Crop" with 100% health.
+
+Image data: ${imageBase64}`
+
+    const result = await detectWithFallback(prompt, imageBase64)
+    return NextResponse.json(result)
   } catch (error) {
     console.error("Disease detection error:", error)
 

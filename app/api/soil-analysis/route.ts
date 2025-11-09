@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
-import { google } from "@ai-sdk/google"
+import { createGoogleGenerativeAI } from "@ai-sdk/google"
 import { generateObject } from "ai"
 import { z } from "zod"
 
-// Gemini API keys with fallback
+// All 6 Gemini API keys for maximum reliability (300 requests/day)
 const GEMINI_API_KEYS = [
+  "AIzaSyCtdtZeXamaI15dMGjZ7k5_NSIUcDlwdP0",
+  "AIzaSyB2OilxGNCq3z5QPYDaAtZr72ZaAfnz-Co",
+  "AIzaSyAkOdC-zHvo_c2lcEAmhwEV_V3ryIPchHs",
   "AIzaSyARCqY9P9TQg0rDJkcNC-j4DEiFl9v8brQ",
   "AIzaSyAe6PnlEGHokJa-V4-ZQl8UKKnA4L6jQn4",
   "AIzaSyDS1k_6OrKfML-ikOLVBewcWCBNVCUlZ6Y",
@@ -51,10 +54,11 @@ async function generateWithFallback(prompt: string) {
 
   for (const apiKey of GEMINI_API_KEYS) {
     try {
+      const google = createGoogleGenerativeAI({ apiKey })
       const { object } = await generateObject({
-        model: google("gemini-2.0-flash-exp", { apiKey }),
+        model: google("gemini-2.0-flash-exp"),
         schema: SoilAnalysisSchema,
-        prompt,
+        prompt
       })
       return object
     } catch (error) {

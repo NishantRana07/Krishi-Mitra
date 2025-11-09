@@ -146,7 +146,7 @@ export default function DiseaseDetectionPage() {
 
         {/* Results Section */}
         {analyzed && analysis ? (
-          <Card className="p-6 overflow-y-auto relative">
+          <Card className="p-6 overflow-y-auto max-h-96 relative">
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
               <AlertCircle className="w-6 h-6 text-accent" />
               Analysis Results

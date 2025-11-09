@@ -1,5 +1,5 @@
 import { generateObject } from "ai"
-import { google } from "@ai-sdk/google"
+import { createGoogleGenerativeAI } from "@ai-sdk/google"
 import { z } from "zod"
 import { type NextRequest, NextResponse } from "next/server"
 
@@ -19,8 +19,11 @@ const CropValidationSchema = z.object({
   suggestions: z.string().describe("Suggestions or warnings about this crop"),
 })
 
-// Fallback API keys for robust operation
+// All 6 Gemini API keys for maximum reliability (300 requests/day)
 const GEMINI_API_KEYS = [
+  "AIzaSyCtdtZeXamaI15dMGjZ7k5_NSIUcDlwdP0",
+  "AIzaSyB2OilxGNCq3z5QPYDaAtZr72ZaAfnz-Co",
+  "AIzaSyAkOdC-zHvo_c2lcEAmhwEV_V3ryIPchHs",
   "AIzaSyARCqY9P9TQg0rDJkcNC-j4DEiFl9v8brQ",
   "AIzaSyAe6PnlEGHokJa-V4-ZQl8UKKnA4L6jQn4",
   "AIzaSyDS1k_6OrKfML-ikOLVBewcWCBNVCUlZ6Y",
@@ -33,11 +36,12 @@ async function validateWithFallback(prompt: string) {
     try {
       const apiKey = GEMINI_API_KEYS[i]
       console.log(`Validating crop with API key ${i + 1}/${GEMINI_API_KEYS.length}`)
-
+      
+      const google = createGoogleGenerativeAI({ apiKey })
       const { object } = await generateObject({
-        model: google("gemini-2.0-flash-exp", { apiKey }),
+        model: google("gemini-2.0-flash-exp"),
         schema: CropValidationSchema,
-        prompt,
+        prompt
       })
 
       console.log(`✓ Successfully validated crop with API key ${i + 1}`)

@@ -55,7 +55,7 @@ export default function DashboardLayout({
         <div className="p-6 border-b border-border">
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <Leaf className="w-8 h-8 text-primary" />
-            <span className="text-xl font-bold text-primary">AgriSense</span>
+            <span className="text-xl font-bold text-primary">Krishi Niti</span>
           </Link>
         </div>
 

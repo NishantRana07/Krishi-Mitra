@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { generateObject } from "ai"
-import { google } from "@ai-sdk/google"
+import { createGoogleGenerativeAI } from "@ai-sdk/google"
 import { z } from "zod"
 
 const MonitoringAnalysisSchema = z.object({
@@ -16,12 +16,14 @@ const MonitoringAnalysisSchema = z.object({
   summary: z.string(),
 })
 
-// Fallback API keys
+// All 6 Gemini API keys for maximum reliability (300 requests/day)
 const GEMINI_API_KEYS = [
+  "AIzaSyCtdtZeXamaI15dMGjZ7k5_NSIUcDlwdP0",
+  "AIzaSyB2OilxGNCq3z5QPYDaAtZr72ZaAfnz-Co",
+  "AIzaSyAkOdC-zHvo_c2lcEAmhwEV_V3ryIPchHs",
   "AIzaSyARCqY9P9TQg0rDJkcNC-j4DEiFl9v8brQ",
   "AIzaSyAe6PnlEGHokJa-V4-ZQl8UKKnA4L6jQn4",
   "AIzaSyDS1k_6OrKfML-ikOLVBewcWCBNVCUlZ6Y",
-  process.env.GOOGLE_GENERATIVE_AI_API_KEY,
 ].filter(Boolean) as string[]
 
 async function analyzeWithFallback(prompt: string) {
@@ -30,10 +32,11 @@ async function analyzeWithFallback(prompt: string) {
   for (let i = 0; i < GEMINI_API_KEYS.length; i++) {
     try {
       const apiKey = GEMINI_API_KEYS[i]
+      const google = createGoogleGenerativeAI({ apiKey })
       const { object } = await generateObject({
-        model: google("gemini-2.0-flash-exp", { apiKey }),
+        model: google("gemini-2.0-flash-exp"),
         schema: MonitoringAnalysisSchema,
-        prompt,
+        prompt
       })
       return object
     } catch (error: any) {
