@@ -102,7 +102,7 @@ lib/
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd "Agri Sense"
+cd "Krishi Niti"
 
 # Install dependencies
 npm install
