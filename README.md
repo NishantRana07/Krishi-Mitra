@@ -1,4 +1,4 @@
-# 🌾 Krishi Niti AI - Intelligent Agricultural Platform
+# 🌾 Krishi Mitra AI - Intelligent Agricultural Platform
 
 [![Built for Appwrite Sites Hackathon](https://img.shields.io/badge/Hackathon-Appwrite%20Sites-FF5A5F?style=for-the-badge)](https://appwrite.io)
 [![Next.js](https://img.shields.io/badge/Next.js-16.0-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
@@ -7,7 +7,7 @@
 
 ## 🚀 Overview
 
-**Krishi Niti AI** revolutionizes agricultural intelligence by transforming one-way farmer dashboards into a **proactive, two-way communication system**. Instead of farmers checking for problems, the platform actively monitors crops and alerts farmers before issues arise.
+**Krishi Mirta AI** revolutionizes agricultural intelligence by transforming one-way farmer dashboards into a **proactive, two-way communication system**. Instead of farmers checking for problems, the platform actively monitors crops and alerts farmers before issues arise.
 
 This hackathon project combines **AI automation, real-time monitoring, and personalized insights** to empower farmers through technology.
 
@@ -102,7 +102,7 @@ lib/
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd "Krishi Niti"
+cd "Krishi Mirta"
 
 # Install dependencies
 npm install
@@ -218,7 +218,7 @@ vercel --prod
 
 ## 🤝 Contributing
 
-This is a hackathon project built for the **Appwrite Sites Hackathon**. Contributions, suggestions, and feedback are welcome!
+This is a hackathon project built for the **Hack CBS Hackathon**. Contributions, suggestions, and feedback are welcome!
 
 ## 📄 License
 
@@ -226,12 +226,12 @@ MIT License - Built with ❤️ for farmers
 
 ## 🏆 Hackathon Submission
 
-**Project**: Krishi Niti AI  
-**Category**: Appwrite Sites Hackathon  
+**Project**: Krishi Mitra 
+**Category**: Hack-CBS 8.0 Hackathon  
 **Goal**: Revolutionize agricultural intelligence through proactive AI-driven insights
 
 ---
 
-**Built by**: [Your Name]  
-**For**: Appwrite Sites Hackathon 2024  
-**Powered by**: Next.js, Gemini AI, Appwrite
+**Built by**: Team Elite coders.
+**For**: Hack-CBS 8.0 Hackathon  
+**Powered by**: Next.js, Gemini AI, Satellite technology, IOT
